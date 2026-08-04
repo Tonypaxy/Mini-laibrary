@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Library Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
+        .main-content {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .section {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .section h2 {
+            font-size: 1.3rem;
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #4a5568;
+            margin-bottom: 6px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            outline: none;
+            background: white;
+        }
+
+        .form-group input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 8px;
+            margin-top: 8px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(245, 101, 101, 0.4);
+        }
+
+        .btn-warning {
+            background: #ed8936;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #dd6b20;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(237, 137, 54, 0.4);
+        }
+
+        .btn-info {
+            background: #4299e1;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #3182ce;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(66, 153, 225, 0.4);
+        }
+
+        .stats {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-card .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .book-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .book-item {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+
+        .book-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateX(4px);
+        }
+
+        .book-item.available {
+            border-left-color: #48bb78;
+        }
+
+        .book-item.borrowed {
+            border-left-color: #f56565;
+        }
+
+        .book-item h3 {
+            color: #2d3748;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .book-item .author {
+            color: #718096;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-available {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .badge-borrowed {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .message.success {
+            background: #c6f6d5;
+            color: #22543d;
+            display: block;
+            border-left: 4px solid #48bb78;
+        }
+
+        .message.error {
+            background: #fed7d7;
+            color: #742a2a;
+            display: block;
+            border-left: 4px solid #f56565;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Mini Library Manager</h1>
+            <p>Manage your book collection with ease</p>
+        </div>
+
+        <div style="padding: 0 30px;">
+            <div class="stats" style="margin-top: 30px;">
+                <div class="stat-card">
+                    <div class="number" id="totalBooks">0</div>
+                    <div class="label">Total Books</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="availableBooks">0</div>
+                    <div class="label">Available</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="borrowedBooks">0</div>
+                    <div class="label">Borrowed</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Add Book Section -->
+            <div class="section">
+                <h2>Add New Book</h2>
+                <div class="form-group">
+                    <label>Book ID</label>
+                    <input type="number" id="addId" placeholder="Enter book ID">
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="addTitle" placeholder="Enter book title">
+                </div>
+                <div class="form-group">
+                    <label>Author</label>
+                    <input type="text" id="addAuthor" placeholder="Enter author name">
+                </div>
+                <button class="btn btn-primary" onclick="handleAddBook()">Add Book</button>
+                <div id="addMessage" class="message"></div>
+            </div>
+
+            <!-- Remove Book Section -->
+            <div class="section">
+                <h2>Remove Book</h2>
+                <div class="form-group">
+                    <label>Book ID</label>
+                    <input type="number" id="removeId" placeholder="Enter book ID to remove">
+                </div>
+                <button class="btn btn-danger" onclick="handleRemoveBook()">Remove Book</button>
+                <div id="removeMessage" class="message"></div>
+            </div>
+
+            <!-- Borrow Book Section -->
+            <div class="section">
+                <h2>Borrow Book</h2>
+                <div class="form-group">
+                    <label>Book ID</label>
+                    <input type="number" id="borrowId" placeholder="Enter book ID to borrow">
+                </div>
+                <button class="btn btn-warning" onclick="handleBorrowBook()">Borrow Book</button>
+                <div id="borrowMessage" class="message"></div>
+            </div>
+
+            <!-- Return Book Section -->
+            <div class="section">
+                <h2>Return Book</h2>
+                <div class="form-group">
+                    <label>Book ID</label>
+                    <input type="number" id="returnId" placeholder="Enter book ID to return">
+                </div>
+                <button class="btn btn-success" onclick="handleReturnBook()">Return Book</button>
+                <div id="returnMessage" class="message"></div>
+            </div>
+
+            <!-- Search Section -->
+            <div class="section full-width">
+                <h2>Search Books</h2>
+                <div class="form-group">
+                    <label>Search by Title</label>
+                    <input type="text" id="searchTitle" placeholder="Enter title to search" onkeyup="handleSearch()">
+                </div>
+                <div id="searchResults" class="book-list"></div>
+            </div>
+
+            <!-- Display All Books -->
+            <div class="section">
+                <h2>All Available Books</h2>
+                <div class="btn-group">
+                    <button class="btn btn-info" onclick="handleDisplayAvailable()">Show Available</button>
+                    <button class="btn btn-info" onclick="handleDisplayBorrowed()">Show Borrowed</button>
+                    <button class="btn btn-primary" onclick="handleDisplayAll()">Show All</button>
+                </div>
+                <div id="allBooks" class="book-list"></div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="section">
+                <h2>Quick Actions</h2>
+             <!-- <button class="btn btn-success" onclick="handleGetAvailable()" style="width: 100%; margin-bottom: 10px;">
+                    Get Available Books Array
+                </button> -->
+                <button class="btn btn-primary" onclick="updateStats()" style="width: 100%;">
+                    Refresh Statistics
+        </button>
+                <div id="availableArray" style="margin-top: 16px; font-size: 0.85rem; color: #4a5568;"></div>
+            </div>
+        </div>
+    </div> 
+
+    <script>
+        // Library array to store all books
+        let library = [];
+
+        // Add sample books
+        addBook(101, "Atomic Habits", "James Clear");
+        addBook(102, "The Alchemist", "Paulo Coelho");
+        addBook(103, "Clean Code", "Robert Martin");
+        addBook(104, "Deep Work", "Cal Newport");
+        addBook(105, "Design Patterns", "Gang of Four");
+
+        // Core Functions
+        function addBook(id, title, author) {
+            let book = {
+                id: id,
+                title: title,
+                author: author,
+                available: true
+            };
+            library.push(book);
+            return book;
+        }
+
+        function removeBook(id) {
+            for (let i = 0; i < library.length; i++) {
+                if (library[i].id === id) {
+                    library.splice(i, 1);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function borrowBook(id) {
+            for (let i = 0; i < library.length; i++) {
+                if (library[i].id === id) {
+                    if (library[i].available) {
+                        library[i].available = false;
+                        return { success: true, message: `"${library[i].title}" has been borrowed.` };
+                    } else {
+                        return { success: false, message: `"${library[i].title}" is already borrowed.` };
+                    }
+                }
+            }
+            return { success: false, message: "Book not found." };
+        }
+
+        function returnBook(id) {
+            for (let i = 0; i < library.length; i++) {
+                if (library[i].id === id) {
+                    if (!library[i].available) {
+                        library[i].available = true;
+                        return { success: true, message: `"${library[i].title}" has been returned.` };
+                    } else {
+                        return { success: false, message: `"${library[i].title}" was not borrowed.` };
+                    }
+                }
+            }
+            return { success: false, message: "Book not found." };
+        }
+
+        function searchByTitle(title) {
+            let results = [];
+            for (let i = 0; i < library.length; i++) {
+                if (library[i].title.toLowerCase().includes(title.toLowerCase())) {
+                    results.push(library[i]);
+                }
+            }
+            return results;
+        }
+
+        function getAvailableBooks() {
+            let availableBooks = [];
+            for (let i = 0; i < library.length; i++) {
+                if (library[i].available) {
+                    availableBooks.push(library[i]);
+                }
+            }
+            return availableBooks;
+        }
+
+        function countTotalBooks() {
+            return library.length;
+        }
+
+        function countAvailableBooks() {
+            let count = 0;
+            for (let i = 0; i < library.length; i++) {
+                if (library[i].available) {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        function countBorrowedBooks() {
+            let count = 0;
+            for (let i = 0; i < library.length; i++) {
+                if (!library[i].available) {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        // UI Handler Functions
+        function showMessage(elementId, message, isSuccess) {
+            let element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = 'message ' + (isSuccess ? 'success' : 'error');
+            setTimeout(() => {
+                element.className = 'message';
+            }, 3000);
+        }
+
+        function handleAddBook() {
+            let id = parseInt(document.getElementById('addId').value);
+            let title = document.getElementById('addTitle').value;
+            let author = document.getElementById('addAuthor').value;
+
+            if (!id || !title || !author) {
+                showMessage('addMessage', 'Please fill all fields', false);
+                return;
+            }
+
+            // Check if ID already exists
+            for (let i = 0; i < library.length; i++) {
+                if (library[i].id === id) {
+                    showMessage('addMessage', 'Book ID already exists', false);
+                    return;
+                }
+            }
+
+            addBook(id, title, author);
+            showMessage('addMessage', `"${title}" added successfully`, true);
+            document.getElementById('addId').value = '';
+            document.getElementById('addTitle').value = '';
+            document.getElementById('addAuthor').value = '';
+            updateStats();
+            handleDisplayAll();
+        }
+
+        function handleRemoveBook() {
+            let id = parseInt(document.getElementById('removeId').value);
+
+            if (!id) {
+                showMessage('removeMessage', 'Please enter a book ID', false);
+                return;
+            }
+
+            if (removeBook(id)) {
+                showMessage('removeMessage', 'Book removed successfully', true);
+                document.getElementById('removeId').value = '';
+                updateStats();
+                handleDisplayAll();
+            } else {
+                showMessage('removeMessage', 'Book not found', false);
+            }
+        }
+
+        function handleBorrowBook() {
+            let id = parseInt(document.getElementById('borrowId').value);
+
+            if (!id) {
+                showMessage('borrowMessage', 'Please enter a book ID', false);
+                return;
+            }
+
+            let result = borrowBook(id);
+            showMessage('borrowMessage', result.message, result.success);
+            if (result.success) {
+                document.getElementById('borrowId').value = '';
+                updateStats();
+                handleDisplayAll();
+            }
+        }
+
+        function handleReturnBook() {
+            let id = parseInt(document.getElementById('returnId').value);
+
+            if (!id) {
+                showMessage('returnMessage', 'Please enter a book ID', false);
+                return;
+            }
+
+            let result = returnBook(id);
+            showMessage('returnMessage', result.message, result.success);
+            if (result.success) {
+                document.getElementById('returnId').value = '';
+                updateStats();
+                handleDisplayAll();
+            }
+        }
+
+        function handleSearch() {
+            let searchTerm = document.getElementById('searchTitle').value;
+            let results = searchByTitle(searchTerm);
+            let resultsDiv = document.getElementById('searchResults');
+
+            if (searchTerm === '') {
+                resultsDiv.innerHTML = '';
+                return;
+            }
+
+            if (results.length === 0) {
+                resultsDiv.innerHTML = '<p style="color: #718096; text-align: center; padding: 20px;">No books found</p>';
+            } else {
+                let html = '';
+                for (let i = 0; i < results.length; i++) {
+                    html += createBookHTML(results[i]);
+                }
+                resultsDiv.innerHTML = html;
+            }
+        }
+
+        function handleDisplayAvailable() {
+            let availableBooks = getAvailableBooks();
+            let allBooksDiv = document.getElementById('allBooks');
+
+            if (availableBooks.length === 0) {
+                allBooksDiv.innerHTML = '<p style="color: #718096; text-align: center; padding: 20px;">No available books</p>';
+            } else {
+                let html = '';
+                for (let i = 0; i < availableBooks.length; i++) {
+                    html += createBookHTML(availableBooks[i]);
+                }
+                allBooksDiv.innerHTML = html;
+            }
+        }
+
+        function handleDisplayBorrowed() {
+            let allBooksDiv = document.getElementById('allBooks');
+            let borrowedBooks = [];
+            
+            for (let i = 0; i < library.length; i++) {
+                if (!library[i].available) {
+                    borrowedBooks.push(library[i]);
+                }
+            }
+
+            if (borrowedBooks.length === 0) {
+                allBooksDiv.innerHTML = '<p style="color: #718096; text-align: center; padding: 20px;">No borrowed books</p>';
+            } else {
+                let html = '';
+                for (let i = 0; i < borrowedBooks.length; i++) {
+                    html += createBookHTML(borrowedBooks[i]);
+                }
+                allBooksDiv.innerHTML = html;
+            }
+        }
+
+        function handleDisplayAll() {
+            let allBooksDiv = document.getElementById('allBooks');
+
+            if (library.length === 0) {
+                allBooksDiv.innerHTML = '<p style="color: #718096; text-align: center; padding: 20px;">Library is empty</p>';
+            } else {
+                let html = '';
+                for (let i = 0; i < library.length; i++) {
+                    html += createBookHTML(library[i]);
+                }
+                allBooksDiv.innerHTML = html;
+            }
+        }
+
+        function handleGetAvailable() {
+            let availableBooks = getAvailableBooks();
+            let availableArrayDiv = document.getElementById('availableArray');
+            availableArrayDiv.innerHTML = `<strong>Available Books Array:</strong><br><pre style="background: #f7fafc; padding: 10px; border-radius: 6px; margin-top: 8px; overflow-x: auto;">${JSON.stringify(availableBooks, null, 2)}</pre>`;
+        }
+
+        function createBookHTML(book) {
+            return `
+                <div class="book-item ${book.available ? 'available' : 'borrowed'}">
+                    <h3>${book.title}</h3>
+                    <div class="author">by ${book.author}</div>
+                    <div>
+                        <span class="badge ${book.available ? 'badge-available' : 'badge-borrowed'}">
+                            ${book.available ? 'Available' : 'Borrowed'}
+                        </span>
+                        <span style="margin-left: 10px; color: #a0aec0;">ID: ${book.id}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateStats() {
+            document.getElementById('totalBooks').textContent = countTotalBooks();
+            document.getElementById('availableBooks').textContent = countAvailableBooks();
+            document.getElementById('borrowedBooks').textContent = countBorrowedBooks();
+        }
+
+        // Initialize the display
+        updateStats();
+        handleDisplayAll();
+    </script>
+</body>
+</html>
